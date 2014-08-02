@@ -38,7 +38,7 @@ public class GenericControllerConnector extends AbstractDeviceImpl {
 						// outdoor
 						// temperature
 						try {
-							Thread.sleep(5000);
+							Thread.sleep(7000);
 							// note that this is only used for testing whether
 							// the
 							// event publishing mechanism is working
