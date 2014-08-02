@@ -204,6 +204,10 @@ public abstract class AbstractFOIImpl implements FOI {
 	protected void publishIOVarChanged(String varId,Object varValue) {
 		this.uigateway.onIOVarChanged(this.getId(), varId, varValue);
 	}
+	
+	protected Object getPropertyValue(String propname) {
+		return this.config.getPropertyValue(propname);
+	}
 
 
 }

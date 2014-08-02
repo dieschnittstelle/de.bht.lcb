@@ -16,6 +16,10 @@ public class RoomHeatingControl extends AbstractFOIImpl {
 
 	@Override
 	public void initialise() {
+		// try to read the properties (the foiprop should only set for one of the two instances of this class)
+		logger.info("reading property foiprop: " + super.getPropertyValue("foiprop"));
+		logger.info("reading property foitypeprop: " + super.getPropertyValue("foitypeprop"));
+		
 		// this shows how to start a control process indedendently of any user
 		// interaction
 		new Thread(new Runnable() {
