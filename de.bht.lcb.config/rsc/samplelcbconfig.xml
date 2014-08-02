@@ -1,0 +1,111 @@
+<lcbnode>
+	<!-- a type of device comprising a set of io variables and being accessed 
+		by instances of the given jclass -->
+	<devicetype semuri="uri_1"
+		jclass="org.dieschnittstelle.lcb.impl.devices.WAGOModbusControllerWrapper"
+		id="dt1">
+		<!-- iovar names must be unique over a set of lcb nodes (they are not bound 
+			to the device as namespace, as the devices are only 'publishers' of commonly 
+			known iovars) -->
+		<iovar semuri="uri_11" actions="readwrite" name="Management"
+			type="Boolean">
+			<!-- with properties, device-specific settings might be specified for 
+				some iovar -->
+			<property name="techname" value="13353004HME_01REGB1" />
+			<property name="devicetype" value="wago" />
+			<property name="internalname" value="%MX0.0" />
+		</iovar>
+		<!-- with properties, device-specific settings might be specified -->
+		<property name="speicheranzahl" value="50" type="Integer" />
+		<!-- here we might specify a history over the iovar values that might be 
+			accesible via some device instance. We migh specify some provider address 
+			for shared storage of history data -->
+		<history provider="">
+			<iovar name="histvar1" interval="" lifetime="" />
+			<iovar name="histvar2" interval="" lifetime="" />
+		</history>
+	</devicetype>
+	<!-- a particular addressable instance of a given type of device publishing 
+		the device's iovars to outside. one could restrict the mode of iovars here 
+		compared to the possibilities of the device type in order to provde restricted 
+		functionality. iovars can be given default values -->
+	<device semuri="uri_2" typeid="dt1" id="d1">
+		<property name="ipaddress" value="141.64.50.218" />
+		<iovar name="Management" value="false" />
+	</device>
+	<!-- a feature of interest of a some type (does this comprise more than 
+		just a declaration of a class that implements the functionality?) -->
+	<foitype semuri="uri" jclass="javaclass" name="name" id="ft1">
+		<property name="ftprop1" value="ftpropval1" />
+		<!-- here one could state minimal requirements with regard to the available 
+			iovars to be provided by the devices -->
+		<requires>
+			<iovar name="Management" semuri="..." mode="..." />
+		</requires>
+		<!-- here we specify options: if some iovar is not available at least in 
+			the given mode, the option is not available -->
+		<hasoption>
+			<iovar name="somevar" semuri="..." mode="..." />
+		</hasoption>
+		<!-- it makes sense to foresee that a foi specifies its own iovars that 
+			are handled at foi level without being bound to iovars of the underlying 
+			devices -->
+		<iovar name="myOwnFoiVar" actions="readwrite" />
+	</foitype>
+	<!-- a particular foi as an instance of some type -->
+	<foi semuri="semuri" id="f1" typeid="ft1">
+		<property name="foiprop1" value="foipropval1" />
+		<!-- here we declare the devices that contribute to the foi, where we assume 
+			a ManyToMany relation between foi instances and device instances -->
+		<!-- one could also foresee the situation where some devices offer identical 
+			iovars and exclude vars from devices -->
+		<!-- iovars are addressed through the gateway using the deviceid, varname 
+			and the action to execute, calls are mediated by the gateway -->
+		<!-- for verifying validity of a foi, we will check whether all requirements 
+			may be satisfied given the specified devices. For this purpose, the foi will 
+			query the gateway using the tuples IOVARS X DEVICES, considering exclude 
+			statements. If some combination is satisfied, the requirement / option is 
+			available (need to think about this again at some moment) -->
+		<device ref="d1" />
+		<device ref="d2">
+			<exclude>
+				<iovar name="lorem" semuri="" />
+			</exclude>
+		</device>
+	</foi>
+	<!-- config will be instantiated, and at runtime, device and foi instances 
+		will receive a gateway object through which to communicate with each other 
+		interfaces are used in order to abstract away from the differences between 
+		local and remote interaction, this will be dealt internally by the gateway 
+		which will be realised by client-side proxies in case of a distributed system -->
+	<!-- a gateway is a "service bus" where services are provided by the devices 
+		connected to the gateway and service consumers are fois -->
+	<!-- may fois communicate with each other or are they orchestrated by an 
+		application layer on top? let's go for a flat structure first without embeddings 
+		of foi and device instances into each other, respectively -->
+	<iogateway id="5">
+		<property name="prop1" value="val1" />
+		<!-- just in case this needs config -->
+		<!-- it WILL need config as here we will specifiy whether we have a local 
+			or a remote gateway -->
+		<!-- we might even consider allowing to specify more than one gateway, 
+			in which case devices and fois would need to be configured with regard to 
+			the gateway(s) they use to communicate with each other -->
+		<!-- gateway will be agnostic with regard to lcb config and will provide 
+			access to registered devices, i.e. configs may share a gateway -->
+	</iogateway>
+	<!-- the ui server at which fois and higher level units may register -->
+	<uigateway id="6">
+		<property name="prop2" value="val2" />
+		<!-- this publishing statements are not yet supported by reading in the 
+			config. For the time being we assume that each foi will be published via 
+			the uigateway of an lcb node -->
+		<publish>
+			<foi ref="">
+				<!-- here one might even consider a binding of fois to views that visualise 
+					a fois functionality -->
+			</foi>
+			<foi ref="" />
+		</publish>
+	</uigateway>
+</lcbnode>
