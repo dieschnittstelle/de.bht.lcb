@@ -12,8 +12,8 @@ import de.bht.lcb.config.IOVarDescription;
  * TODO: we need @JsonTypeInfo for being able to pass device proxies via http
  * requests to remote uigateways
  * 
- * TODO: devices should be able to publish events to a gateway which will then
- * be propagated to the fois that are associated with that device. This way,
+ * devices should be able to publish events to a gateway which will then be
+ * propagated to the fois that are associated with that device. This way,
  * devices can implement local control cycles to avoid continuous polling by
  * fois via the gateway (which will possibly be done over the network). We
  * currently try implement only a very rudimentary version of this mechanism...
@@ -24,6 +24,10 @@ import de.bht.lcb.config.IOVarDescription;
  * relevant for the foi would need to be retrieved via polling (event mechanism
  * could be characterised as "push2poll", comparable to push notifications for
  * mobile platforms)
+ * 
+ * TODO as the uigateway foresees to receice ioVarChanged messages, it would
+ * make sense to add such a notification mechanism also to the iogateway in
+ * order to avoid push2poll roundtrips!
  * 
  * @author joern.kreutel
  */
