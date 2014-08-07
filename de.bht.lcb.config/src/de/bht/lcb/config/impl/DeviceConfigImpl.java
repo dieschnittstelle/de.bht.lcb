@@ -56,6 +56,10 @@ public class DeviceConfigImpl extends
 	@Override
 	public Collection<String> getIOVarNames() {
 		Set<String> allvars = new HashSet<String>();
+		
+		logger.debug(getId() + ": iovars on device are: " + super.getIOVarNames());
+		logger.debug(getId() + ": iovars on device type are: " + deviceType.getIOVarNames());
+		
 		allvars.addAll(deviceType.getIOVarNames());
 		allvars.addAll(super.getIOVarNames());
 
@@ -85,7 +89,11 @@ public class DeviceConfigImpl extends
 
 	@Override
 	public IOVarDescription getIOVarDescription(String iovarid) {
+				
 		IOVarDescription desc = super.getIOVarDescription(iovarid);
+		
+		logger.debug(getId() + ": local iovardescription " + iovarid + " on device is: " + desc + ". iovars are: " + super.getIOVarNames());
+
 		if (desc != null) {
 			return desc;
 		}

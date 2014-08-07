@@ -2,7 +2,7 @@
 	<!-- a type of device comprising a set of io variables and being accessed 
 		by instances of the given jclass -->
 	<devicetype semuri="uri_1"
-		jclass="org.dieschnittstelle.lcb.impl.devices.WAGOModbusControllerWrapper"
+		jclass="org.dieschnittstelle.lcb.impl.devices.WAGOModbusController"
 		id="dt1">
 		<!-- iovar names must be unique over a set of lcb nodes (they are not bound 
 			to the device as namespace, as the devices are only 'publishers' of commonly 

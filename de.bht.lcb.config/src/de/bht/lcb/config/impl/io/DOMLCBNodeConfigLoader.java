@@ -273,7 +273,8 @@ public class DOMLCBNodeConfigLoader implements LCBNodeConfigLoader {
 		DeviceConfigImpl dev = new DeviceConfigImpl();
 		addId(el, dev);
 		dev.setType(createId(el, ATTR_TYPE_ID));		
-		dev.setProperties(readProperties(el));		
+		dev.setProperties(readProperties(el));	
+		dev.setIOVars(readIOVarDescriptions(el));
 		ReflectionUtils.readInstanceAttributesFromElement(DeviceConfig.class,
 				el, dev);
 		// dev.set

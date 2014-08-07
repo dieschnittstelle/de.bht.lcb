@@ -8,32 +8,30 @@
 		jclass="de.bht.lcb.simpleimpl.devices.IndoorHeatingControllerConnector"
 		id="devtype_indoorHeating">
 		<!-- two iovars provided by devices of this type -->
-		<iovar actions="write" name="raumtemperatur_ist" type="Float">
+		<iovar actions="read" name="raumtemperatur_ist" type="Float">
 			<!-- with properties, device-specific settings might be specified for 
 				some iovar -->
 			<property name="techname" value="ABC_01REGB1" />
 			<property name="internalname" value="%MX0.0" />
 		</iovar>
-		<iovar actions="write" name="thermostat_oeffnungsgrad" type="Float">
+		<iovar actions="readwrite" name="thermostat_oeffnungsgrad" type="Float">
 			<!-- with properties, device-specific settings might be specified for 
 				some iovar -->
 			<property name="techname" value="DEF_02REGB2" />
 			<property name="internalname" value="%MX1.0" />
 		</iovar>
 	</devicetype>
-	<devicetype
-		jclass="de.bht.lcb.simpleimpl.devices.GenericControllerConnector"
+	<devicetype jclass="de.bht.lcb.simpleimpl.devices.GenericControllerConnector"
 		id="devtype_outdoorTemperature">
 		<!-- two iovars provided by devices of this type -->
-		<iovar actions="write" name="aussentemperatur" type="Float">
+		<iovar actions="read" name="aussentemperatur" type="Float">
 			<!-- with properties, device-specific settings might be specified for 
 				some iovar -->
 			<property name="techname" value="XYZ_03REGB3" />
 			<property name="internalname" value="%MX3.0" />
 		</iovar>
-	</devicetype>	
-	<devicetype
-		jclass="de.bht.lcb.simpleimpl.devices.GenericControllerConnector"
+	</devicetype>
+	<devicetype jclass="de.bht.lcb.simpleimpl.devices.GenericControllerConnector"
 		id="devtype_windowOpening">
 		<!-- two iovars provided by devices of this type -->
 		<iovar actions="readwrite" name="fenster_oeffnungsgrad" type="Float">
@@ -44,9 +42,9 @@
 		</iovar>
 	</devicetype>
 	<!-- we have five devices: one for the outdoor temperate and two instances 
-		for indoor heating and window opening, respectively. Most importantly, the devices specify the particular 
-		properties that are required in addition to the information contained in 
-		the device types -->
+		for indoor heating and window opening, respectively. Most importantly, the 
+		devices specify the particular properties that are required in addition to 
+		the information contained in the device types -->
 	<device typeid="devtype_indoorHeating" id="dev_indoorHeating_216">
 		<property name="controller_ipaddress" value="141.64.50.100" />
 		<property name="controller_port" value="8080" />
@@ -61,26 +59,43 @@
 	<device typeid="devtype_windowOpening" id="dev_windowOpening_218">
 		<property name="controller_ipaddress" value="141.64.50.103" />
 	</device>
-		<device typeid="devtype_outdoorTemperature" id="dev_outdoorTemperature_west">
+	<device typeid="devtype_outdoorTemperature" id="dev_outdoorTemperature_west">
 		<property name="controller_ipaddress" value="141.64.50.105" />
+		<!-- a device may declare its own iovars which "override" the iovars of 
+			its type - TODO: in case of identical names, iovars on device *replace* the 
+			iovars of its devicetype. It would be better to *merge* the descriptions -->
+		<!-- declaration of iovars on devices is particularly required in case 
+			a single controller is used to access various io hardware devices of the 
+			same type. in this case iovars will declare, e.g., the inidividual addresses 
+			associated with the hardware devices at the level of the controller -->
+		<iovar actions="read" name="aussentemperatur" type="Float">
+			<!-- with properties, device-specific settings might be specified for 
+				some iovar -->
+			<property name="techname" value="ABC_01REGB1" />
+			<property name="internalname" value="%MX5555.0" />
+		</iovar>
 	</device>
-	<!-- we have a single foi type for RoomHeatingControl that states dependencies to the three variables provided by the devices and declares one local variable -->
-	<foitype jclass="de.bht.lcb.simpleimpl.fois.RoomHeatingControl" id="foitype_roomHeating">
-	    <iovar name="steuerungszyklus_intervall" actions="readwrite" value="5000"/>
-	    <iovar name="raumtemperatur_soll" actions="readwrite" />
+	<!-- we have a single foi type for RoomHeatingControl that states dependencies 
+		to the three variables provided by the devices and declares one local variable -->
+	<foitype jclass="de.bht.lcb.simpleimpl.fois.RoomHeatingControl"
+		id="foitype_roomHeating">
+		<iovar name="steuerungszyklus_intervall" actions="readwrite"
+			value="5000" />
+		<iovar name="raumtemperatur_soll" actions="readwrite" />
 		<requires>
 			<iovar name="raumtemperatur_ist" mode="read" />
 			<iovar name="fenster_oeffnungsgrad" mode="readwrite" />
 			<iovar name="thermostat_oeffnungsgrad" mode="readwrite" />
 			<iovar name="aussentemperatur" mode="readwrite" />
 		</requires>
-	    <!--  here we add a property for testing -->
-	    <property name="foitypeprop" value="foitypepropval"/>
+		<!-- here we add a property for testing -->
+		<property name="foitypeprop" value="foitypepropval" />
 	</foitype>
-	<!--  we have two foi instances using their own devices for room heating and window control and the shared device for outdoor temperature -->
+	<!-- we have two foi instances using their own devices for room heating 
+		and window control and the shared device for outdoor temperature -->
 	<foi id="roomHeating_216" typeid="foitype_roomHeating">
-	    <!--  here we add a property for testing -->
-	    <property name="foiprop" value="foipropval"/>
+		<!-- here we add a property for testing -->
+		<property name="foiprop" value="foipropval" />
 		<device ref="dev_indoorHeating_216" />
 		<device ref="dev_windowOpening_216" />
 		<device ref="dev_outdoorTemperature_west" />
@@ -90,10 +105,11 @@
 		<device ref="dev_windowOpening_218" />
 		<device ref="dev_outdoorTemperature_west" />
 	</foi>
-	<!--  as all components are run by a single process we use the simple iogateway -->
+	<!-- as all components are run by a single process we use the simple iogateway -->
 	<iogateway id="iogw" jclass="de.bht.lcb.runtime.impl.SimpleIOGatewayImpl">
 	</iogateway>
 	<!-- a simple ui gateway processing input from a console window -->
-	<uigateway id="uigw" jclass="de.bht.lcb.simpleimpl.gateways.ConsoleInputUIGatewayImpl">
+	<uigateway id="uigw"
+		jclass="de.bht.lcb.simpleimpl.gateways.ConsoleInputUIGatewayImpl">
 	</uigateway>
 </lcbnode>
